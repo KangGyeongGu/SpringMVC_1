@@ -6,10 +6,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,9 +36,53 @@ public class BasicItemController {
         return "basic/addForm";
     }
 
+    // @PostMapping("/add")
+    public String addItemV1(
+            @RequestParam String itemName,
+            @RequestParam int price,
+            @RequestParam Integer quantity,
+            Model model) {
+
+        Item item = new Item();
+        item.setItemName(itemName);
+        item.setPrice(price);
+        item.setQuantity(quantity);
+
+        itemRepository.save(item);
+
+        model.addAttribute("item", item);
+
+        return "basic/item";
+    }
+
+    /*
+    * @ModelAttribute
+    *  - 요청 파라미터 처리 : Item 객체를 생성하고 요청 파라미터 값을 프로퍼티 접근법으로 입력해준다.
+    *  - Model 추가 : 모델 Model 에 @ModelAttribute로 지정한 객체를 자동으로 넣어준다.
+    * */
+    // @PostMapping("/add")
+    public String addItemV2(@ModelAttribute("item") Item item) {
+        itemRepository.save(item);
+        // model.addAttribute("item", item);
+        return "basic/item";
+    }
+
+    /*
+    * name 속성 생략 시 Item -> item 으로 이름을 기본 지정한다.
+    * */
+    // @PostMapping("/add")
+    public String addItemV3(@ModelAttribute Item item) {
+        itemRepository.save(item);
+        return "basic/item";
+    }
+
+    /*
+    * ModelAttribute 생략 가능
+    * */
     @PostMapping("/add")
-    public String save() {
-        return "basic/save";
+    public String addItemV4(Item item) {
+        itemRepository.save(item);
+        return "basic/item";
     }
 
     @PostConstruct
