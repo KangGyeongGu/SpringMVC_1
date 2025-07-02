@@ -78,11 +78,22 @@ public class BasicItemController {
 
     /*
     * ModelAttribute 생략 가능
+    * "basic/item" -> 정적 리소스 화면을 그려서 전달
     * */
-    @PostMapping("/add")
+    // @PostMapping("/add")
     public String addItemV4(Item item) {
         itemRepository.save(item);
         return "basic/item";
+    }
+
+    /*
+    * PRG 적용
+    * 재요청
+    * */
+    @PostMapping("/add")
+    public String addItemV5(Item item) {
+        itemRepository.save(item);
+        return "redirect:/basic/items/" + item.getId();
     }
 
     @GetMapping("/{itemId}/edit")
